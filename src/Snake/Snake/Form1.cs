@@ -14,6 +14,7 @@ namespace Snake
     {
         
         Pixel p = new Pixel(10, 32); // Ett objekt som lagrar alla egenskaper av spelets pixlar
+        Snake s = new Snake();
         public Form1()
         {
             InitializeComponent();
@@ -28,22 +29,22 @@ namespace Snake
         {
             if (keyData == Keys.Left)
             {
-                MessageBox.Show("You pressed Left arrow key");
+                s.direction = 0;
                 return true;
             }
             else if (keyData == Keys.Right)
             {
-                MessageBox.Show("You pressed Right arrow key");
+                s.direction = 1;
                 return true;
             }
             else if (keyData == Keys.Up)
             {
-                MessageBox.Show("You pressed Up arrow key");
+                s.direction = 2;
                 return true;
             }
             else if (keyData == Keys.Down)
             {
-                MessageBox.Show("You pressed Down arrow key");
+                s.direction = 3;
                 return true;
             }
                 return base.ProcessCmdKey(ref msg, keyData);
@@ -62,5 +63,15 @@ namespace Snake
             width = w;
             amount = a;
         }
+    }
+
+    public class Snake
+    {
+        public int length;
+        public int direction;
+        public int posx;
+        public int posy;
+
+
     }
 }
