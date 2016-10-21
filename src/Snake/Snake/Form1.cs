@@ -12,9 +12,10 @@ namespace Snake
 {
     public partial class Form1 : Form
     {
-        
         Pixel p = new Pixel(10, 32); // Ett objekt som lagrar alla egenskaper av spelets pixlar
         Snake s = new Snake();
+        Brush b = new Brush();
+
         public Form1()
         {
             InitializeComponent();
@@ -56,7 +57,8 @@ namespace Snake
     public class Pixel
     {
         public int width;
-        public int amount;
+        public static int amount;
+        public int[,] grid = new int[amount, amount];
 
         public Pixel(int w, int a)
         {
