@@ -12,9 +12,10 @@ namespace Snake
 {
     public partial class Form1 : Form
     {
-        Pixel p = new Pixel(10, 32); // Ett objekt som lagrar alla egenskaper av spelets pixlar
-        Snake s = new Snake();
-        Brush b = new Brush();
+        static int w = 32; // width
+        Pixel p = new Pixel(10, w); // Ett objekt som lagrar alla egenskaper av spelets pixlar
+        Snake s = new Snake(w / 2); // Ormen
+        SolidBrush b = new SolidBrush(Color.Red);
 
         public Form1()
         {
@@ -57,7 +58,7 @@ namespace Snake
     public class Pixel
     {
         public int width;
-        public static int amount;
+        public int amount;
         public int[,] grid = new int[amount, amount];
 
         public Pixel(int w, int a)
@@ -70,10 +71,23 @@ namespace Snake
     public class Snake
     {
         public int length;
-        public int direction;
+        public int direction = 3;
         public int posx;
         public int posy;
 
+        public Snake(int c)
+        {
+            posx = c;
+            posy = c;
+        }
+
+        public SolidBrush red = new SolidBrush(Color.Red);
+        
+
+        private void Form1_Paint(object sender, PaintEventArgs pe)
+        {
+            Graphics g = pe.Graphics;
+        }
 
     }
 }
