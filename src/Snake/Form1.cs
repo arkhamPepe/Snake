@@ -46,6 +46,7 @@ namespace Snake
                 {
                     s.length++; // Grow +1
                     p.grid[s.posx, s.posy] = s.id; // Change color of gameboard
+
                 }
             }
         }

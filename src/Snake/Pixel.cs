@@ -24,9 +24,18 @@ namespace Snake
             width = w;
             amount = a;
             grid = new int[a, a];
+
+            for (int i = 0; i < a; i++)
+                for (int j = 0; j < a; j++)
+                    grid[j, i] = 0;
         }
 
-        void Paint(int[,] grid)
+        public void Paint(int[,] grid)
+        {
+
+        }
+
+        public void Refresh()
         {
 
         }
