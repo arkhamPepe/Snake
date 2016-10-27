@@ -13,17 +13,46 @@ namespace Snake
     public partial class Form1 : Form
     {
         static int w = 32; // width
-        Pixel p = new Pixel(10, w); // Ett objekt som lagrar alla egenskaper av spelets pixlar
+        public Pixel p = new Pixel(10, w); // Ett objekt som lagrar alla egenskaper av spelets pixlar
         Snake s = new Snake(w / 2); // Ormen
         SolidBrush b = new SolidBrush(Color.Red);
-
         public Form1()
         {
             InitializeComponent();
+
+            while (s.Alive(s.posx, s.posy, p.amount)) // While snake is inside playground
+            {
+                // Move one step in the current direction
+                switch (s.direction)
+                {
+                    case 1:
+                        s.posx++;
+                        break;
+
+                    case 2:
+                        s.posy++;
+                        break;
+
+                    case 3:
+                        s.posx--;
+                        break;
+
+                    case 4:
+                        s.posy--;
+                        break;
+                }
+                // If on top of apple, grow in size
+                if (p.grid[s.posx, s.posy] == p.apple)
+                {
+                    s.length++; // Grow +1
+                    p.grid[s.posx, s.posy] = s.id; // Change color of gameboard
+                }
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            // Skapar det önskvärda rutnätet för spelet
             this.Width = p.amount * p.width;
             this.Height = p.amount * p.width;
         }
@@ -51,43 +80,5 @@ namespace Snake
             }
                 return base.ProcessCmdKey(ref msg, keyData);
         }
-    }
-    /// <summary>
-    /// Holds properties of gameboard size
-    /// </summary>
-    public class Pixel
-    {
-        public int width;
-        public int amount;
-        public int[,] grid = new int[amount, amount];
-
-        public Pixel(int w, int a)
-        {
-            width = w;
-            amount = a;
-        }
-    }
-
-    public class Snake
-    {
-        public int length;
-        public int direction = 3;
-        public int posx;
-        public int posy;
-
-        public Snake(int c)
-        {
-            posx = c;
-            posy = c;
-        }
-
-        public SolidBrush red = new SolidBrush(Color.Red);
-        
-
-        private void Form1_Paint(object sender, PaintEventArgs pe)
-        {
-            Graphics g = pe.Graphics;
-        }
-
     }
 }
