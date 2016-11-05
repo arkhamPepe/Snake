@@ -129,13 +129,14 @@ namespace Snake
                 // If on top of apple, grow in size (actually just stop the decrements of Snake body elements)
                 if (p.grid[s.x, s.y] == p.apple)
                 {
-                    p.eaten = true;
+                    p.GenerateApple();
                     s.length++; // Grow +1
                     p.grid[s.x, s.y] = s.length; // Change color of gameboard
+                    p.Refresh(0);
                 }
                 else
                 {
-                    p.Refresh();
+                    p.Refresh(1);
                 }
             }
 

@@ -42,5 +42,8 @@ namespace Snake
         }
 
         public void InitPaint()
+        {
+
+        }
     }
 }
