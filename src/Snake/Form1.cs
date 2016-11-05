@@ -16,9 +16,13 @@ namespace Snake
         public Pixel p = new Pixel(10, w); // Object that stores all properties of gameboard elements, like pixels
         Snake s = new Snake(w / 2); // Ormen
         SolidBrush b = new SolidBrush(Color.Red);
+
+        public bool running = false;
         public Form1()
         {
             InitializeComponent();
+
+            while (!running) { }
 
             while (s.Alive(s.x, s.y, p.amount)) // While snake is inside playground
             {
@@ -59,8 +63,8 @@ namespace Snake
         private void Form1_Load(object sender, EventArgs e)
         {
             // Skapar det önskvärda rutnätet för spelet
-            this.Width = p.amount * p.width;
-            this.Height = p.amount * p.width;
+            //this.Width = p.amount * p.width;
+            //this.Height = p.amount * p.width;
         }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
@@ -85,6 +89,11 @@ namespace Snake
                 return true;
             }
                 return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void btnPlay_Click(object sender, EventArgs e)
+        {
+            running = true;
         }
     }
 }

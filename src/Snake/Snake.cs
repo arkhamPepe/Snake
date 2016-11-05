@@ -13,7 +13,7 @@ namespace Snake
     public class Snake
     {
         public int length = 3;
-        public int direction = 4;
+        public int direction = 4; // 1 = right, 2 = up, 3 = left, 4 = down
         public int x;
         public int y;
 
