@@ -41,12 +41,9 @@ namespace Snake
             for (int i = 0; i < amount; i++)
                 for (int j = 0; j < amount; j++)
                 {
-                    // This element is not grass.
-                    if (grid[j, i] != 0)
+                    // This element is not grass or apple.
+                    if (grid[j, i] != 0 || grid[j,i] != apple)
                         grid[j, i] -= q;
-
-                    // This element is an apple.
-                    if (grid[j, i] == apple)
 
                 }
         }
