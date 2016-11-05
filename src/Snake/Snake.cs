@@ -41,5 +41,6 @@ namespace Snake
             Graphics g = pe.Graphics;
         }
 
+        public void InitPaint()
     }
 }
