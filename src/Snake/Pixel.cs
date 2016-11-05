@@ -15,7 +15,7 @@ namespace Snake
     /// </summary>
     public class Pixel
     {
-        public int apple = 2;
+        public int apple = -1;
         public int width;
         public int amount;
         public int[,] grid;
@@ -25,8 +25,8 @@ namespace Snake
             amount = a;
             grid = new int[a, a];
 
-            for (int i = 0; i < a; i++)
-                for (int j = 0; j < a; j++)
+            for (int i = 0; i < amount; i++)
+                for (int j = 0; j < amount; j++)
                     grid[j, i] = 0;
         }
 
@@ -37,7 +37,10 @@ namespace Snake
 
         public void Refresh()
         {
-
+            for (int i = 0; i < amount; i++)
+                for (int j = 0; j < amount; j++)
+                    if (grid[j,i] != 0)
+                        grid[j, i] -= 1;
         }
     }
 }

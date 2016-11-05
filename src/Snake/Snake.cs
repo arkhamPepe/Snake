@@ -12,16 +12,15 @@ namespace Snake
 {
     public class Snake
     {
-        public int length;
-        public int direction = 3;
-        public int posx;
-        public int posy;
-        public int id = 1; // ID signifies the color the element gets in-game
+        public int length = 3;
+        public int direction = 4;
+        public int x;
+        public int y;
 
-        public Snake(int c)
+        public Snake(int c) // 'c' for "center"
         {
-            posx = c;
-            posy = c;
+            x = c;
+            y = c;
         }
 
         public bool Alive(int x, int y, int a) //Determines if snake is alive, ie. inside the playground

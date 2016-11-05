@@ -13,40 +13,45 @@ namespace Snake
     public partial class Form1 : Form
     {
         static int w = 32; // width
-        public Pixel p = new Pixel(10, w); // Ett objekt som lagrar alla egenskaper av spelets pixlar
+        public Pixel p = new Pixel(10, w); // Object that stores all properties of gameboard elements, like pixels
         Snake s = new Snake(w / 2); // Ormen
         SolidBrush b = new SolidBrush(Color.Red);
         public Form1()
         {
             InitializeComponent();
 
-            while (s.Alive(s.posx, s.posy, p.amount)) // While snake is inside playground
+            while (s.Alive(s.x, s.y, p.amount)) // While snake is inside playground
             {
                 // Move one step in the current direction
                 switch (s.direction)
                 {
                     case 1:
-                        s.posx++;
+                        s.x++;
                         break;
 
                     case 2:
-                        s.posy++;
+                        s.y++;
                         break;
 
                     case 3:
-                        s.posx--;
+                        s.x--;
                         break;
 
                     case 4:
-                        s.posy--;
+                        s.y--;
                         break;
                 }
-                // If on top of apple, grow in size
-                if (p.grid[s.posx, s.posy] == p.apple)
+
+                System.Threading.Thread.Sleep(500);
+                // If on top of apple, grow in size (actually just stop the decrements of Snake body elements)
+                if (p.grid[s.x, s.y] == p.apple)
                 {
                     s.length++; // Grow +1
-                    p.grid[s.posx, s.posy] = s.id; // Change color of gameboard
-
+                    p.grid[s.x, s.y] = s.length; // Change color of gameboard
+                }
+                else
+                {
+                    p.Refresh();
                 }
             }
         }
@@ -61,22 +66,22 @@ namespace Snake
         {
             if (keyData == Keys.Left)
             {
-                s.direction = 0;
+                s.direction = 1;
                 return true;
             }
             else if (keyData == Keys.Right)
             {
-                s.direction = 1;
+                s.direction = 2;
                 return true;
             }
             else if (keyData == Keys.Up)
             {
-                s.direction = 2;
+                s.direction = 3;
                 return true;
             }
             else if (keyData == Keys.Down)
             {
-                s.direction = 3;
+                s.direction = 4;
                 return true;
             }
                 return base.ProcessCmdKey(ref msg, keyData);
