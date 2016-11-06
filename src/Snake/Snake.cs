@@ -12,10 +12,9 @@ namespace Snake
 {
     public class Snake
     {
-        public int length = 3;
+        public int start_length, length = 3;
         public int direction = 4; // 1 = right, 2 = up, 3 = left, 4 = down
-        public int x;
-        public int y;
+        public int x, y;
 
         public Snake(int c) // 'c' for "center"
         {
@@ -23,27 +22,16 @@ namespace Snake
             y = c;
         }
 
-        public bool Alive(int x, int y, int a) //Determines if snake is alive, ie. inside the playground
+        public bool Alive(int x, int y, int a, int grid) //Determines if snake is alive, ie. inside the playground
         {
             if (x == a || x < 0)
                 return false;
-            if (y == a || x < 0)
+            else if (y == a || y < 0)
+                return false;
+            else if (grid > 0 && grid < length)
                 return false;
 
             return true;
-        }
-
-        public SolidBrush red = new SolidBrush(Color.Red);
-
-
-        private void Form1_Paint(object sender, PaintEventArgs pe)
-        {
-            Graphics g = pe.Graphics;
-        }
-
-        public void InitPaint()
-        {
-
         }
     }
 }
