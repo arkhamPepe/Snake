@@ -82,8 +82,8 @@ namespace Snake
         Thread th;
 
         public void thread()
-        {
-            while (s.Alive(s.x, s.y, p.amount, p.grid[s.x, s.y])) // While snake is inside playground
+        {                                                         // p.grid[s.x, s.y]
+            while (s.Alive(s.x, s.y, p.amount)) // While snake is inside playground
             {
                 // Move one step in the current direction
                 switch (s.direction)
@@ -105,8 +105,8 @@ namespace Snake
                         break;
                 }
 
-                // Snake is dead.
-                if (!s.Alive(s.x, s.y, p.amount, p.grid[s.x, s.y]))
+                // Snake is dead.   p.grid[s.x, s.y]
+                if (!s.Alive(s.x, s.y, p.amount))
                     break;
 
                 // Wait some...
@@ -145,7 +145,7 @@ namespace Snake
                 PaintBoard();
             }
 
-            MessageBox.Show("Game Over!");
+            MessageBox.Show("Game Over!\nYour score is: " + score);
         }
 
         private void UpdateScore()

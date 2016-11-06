@@ -90,6 +90,7 @@
             this.ClientSize = new System.Drawing.Size(284, 261);
             this.Controls.Add(this.gameboard);
             this.Name = "Form1";
+            this.ShowIcon = false;
             this.Text = "Snake";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.gameboard.ResumeLayout(false);
