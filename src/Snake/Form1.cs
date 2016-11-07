@@ -25,7 +25,7 @@ namespace Snake
         static int w = 20; // width of each box
         static int x_offshoot = 0; // Off-shoot from left border
         static int y_offshoot = 0; // Off shoot from top border
-
+        public bool arrow_pressed = false;
         public Pixel p = new Pixel(w, a); // Object that stores all properties of gameboard elements, like pixels
         Snake s = new Snake(w / 2); // Ormen
         
@@ -81,10 +81,14 @@ namespace Snake
         
         Thread th;
 
+        // Thread for separate process "unit" while main unit handles key events. This way the player can control the snakes movement while graphics are rendering.
         public void thread()
         {                                                         // p.grid[s.x, s.y]
             while (s.Alive(s.x, s.y, p.amount)) // While snake is inside playground
             {
+                // Makes it possible to perform only one move per turn
+                arrow_pressed = false;
+
                 // Move one step in the current direction
                 switch (s.direction)
                 {
@@ -165,24 +169,28 @@ namespace Snake
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (keyData == Keys.Left && s.direction != 1)
+            if (keyData == Keys.Left && s.direction != 1 && s.direction != 3 && arrow_pressed == false)
             {
                 s.direction = 3;
+                arrow_pressed = true;
                 return true;
             }
-            else if (keyData == Keys.Right && s.direction != 3)
+            else if (keyData == Keys.Right && s.direction != 3 && s.direction != 1 && arrow_pressed == false)
             {
                 s.direction = 1;
+                arrow_pressed = true;
                 return true;
             }
-            else if (keyData == Keys.Up && s.direction != 4)
+            else if (keyData == Keys.Up && s.direction != 4 && s.direction != 2 && arrow_pressed == false)
             {
                 s.direction = 2;
+                arrow_pressed = true;
                 return true;
             }
-            else if (keyData == Keys.Down && s.direction != 2)
+            else if (keyData == Keys.Down && s.direction != 2 && s.direction != 4 && arrow_pressed == false)
             {
                 s.direction = 4;
+                arrow_pressed = true;
                 return true;
             }
                 return base.ProcessCmdKey(ref msg, keyData);
