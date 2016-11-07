@@ -201,6 +201,10 @@ namespace Snake
             lblSnake.Visible = false;
             btnPlay.Visible = false;
 
+            score = 0;
+            wait = 200;
+            s.length = 3;
+
             p.GenerateApple();
             p.CreateSnake(s.length, s.x, s.y);
             PaintBoard();
