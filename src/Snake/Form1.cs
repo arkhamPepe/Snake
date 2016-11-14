@@ -156,8 +156,31 @@ namespace Snake
         {
             score += 10;
 
+            string score_text = Convert.ToString(score);
+
             if ((score / 10) % 5 == 0)
                 wait = (wait * 4) / 5;
+
+            // Updates and sets score.
+            SetLabelText(points, score_text);
+        }
+
+        /// <summary>
+        /// Sets the text of a label form to input value. 
+        /// Performs a cross-thread safe call if necessary.
+        /// </summary>
+        /// <param name="label">Holds the label object</param>
+        /// <param name="text">New string value of label.Text</param>
+        private string SetLabelText(Label label, string text)
+        {
+            if (label.InvokeRequired)
+            {
+                return text;
+            }
+            else
+            {
+                return text;
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
