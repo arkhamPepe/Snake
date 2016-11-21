@@ -21,13 +21,13 @@ namespace Snake
 
         static int score = 0;
         static int wait = 200;
-        static int a = 32; // amount of boxes in gameboard
-        static int w = 20; // width of each box
+        static int amount_cells = 32; // amount of cells in gameboard
+        static int width = 20; // width of each box
         static int x_offshoot = 0; // Off-shoot from left border
         static int y_offshoot = 0; // Off shoot from top border
         public bool arrow_pressed = false;
-        public Pixel p = new Pixel(w, a); // Object that stores all properties of gameboard elements, like pixels
-        Snake s = new Snake(w / 2); // Ormen
+        public Pixel p = new Pixel(width, amount_cells); // Object that stores all properties of gameboard elements, like pixels
+        Snake s = new Snake(width / 2); // Ormen
         
         public Form1()
         {
@@ -150,8 +150,17 @@ namespace Snake
             }
 
             MessageBox.Show("Game Over!\nYour score is: " + score);
+            Show_Menu(true);
         }
 
+        public void Revert_Settings()
+        {
+
+        }
+
+        /// <summary>
+        /// Updates the score.
+        /// </summary>
         private void UpdateScore()
         {
             score += 10;
@@ -183,6 +192,11 @@ namespace Snake
             }
         }
 
+        /// <summary>
+        /// Runs at the beginning of the program.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Form1_Load(object sender, EventArgs e)
         {
             // Skapar det önskvärda rutnätet för spelet
@@ -190,6 +204,12 @@ namespace Snake
             this.Height = p.amount * p.width;
         }
 
+        /// <summary>
+        /// Handles event when a key is pressed, specifically arrow keys. Controls the direction of snake.
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <param name="keyData"></param>
+        /// <returns></returns>
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == Keys.Left && s.direction != 1 && s.direction != 3 && arrow_pressed == false)
@@ -219,14 +239,19 @@ namespace Snake
                 return base.ProcessCmdKey(ref msg, keyData);
         }
 
+        /// <summary>
+        /// Starts the game.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnPlay_Click(object sender, EventArgs e)
         {
-            lblSnake.Visible = false;
-            btnPlay.Visible = false;
+            Show_Menu(false);
 
             score = 0;
             wait = 200;
             s.length = 3;
+            amount_cells = Convert.ToInt32(tbBoxes.Text);
 
             p.GenerateApple();
             p.CreateSnake(s.length, s.x, s.y);
@@ -234,6 +259,19 @@ namespace Snake
 
             th = new Thread(thread);
             th.Start();
+        }
+
+        /// <summary>
+        /// Either shows the menu and hides the rest or shows the rest and hides the menu.
+        /// </summary>
+        /// <param name="visible"></param>
+        private void Show_Menu(bool visible)
+        {
+            lblSnake.Visible = visible;
+            btnPlay.Visible = visible;
+            tbBoxes.Visible = visible;
+
+            points.Visible = !visible;
         }
 
         // Happened to create this function and now it is mandatory in order for "Snake.game" to work
@@ -248,6 +286,9 @@ namespace Snake
         //        }
         }
 
+        /// <summary>
+        /// Purpose to draw entire gameboard over the previous one.
+        /// </summary>
         public void PaintBoard()
         {
             g = gameboard.CreateGraphics();
@@ -259,15 +300,13 @@ namespace Snake
                 }
         }
 
+        /// <summary>
+        /// Draws a rectangle at given coordinate on gameboard.
+        /// </summary>
+        /// <param name="j">Represents the x-coordinate in gameboard</param>
+        /// <param name="i">Represents the y-coordinate in gameboard</param>
         private void drawRectangle(int j, int i)
         {
-            //Point[] points =
-            //{
-            //    new Point(start_x, start_y),
-            //    new Point(start_x + w * a, start_y + w * a)
-            //};
-            //Size sz = new Size(points[1]); 
-
             if (p.grid[j, i] > 0)
                 b.Color = Color.Blue;
             else if (p.grid[j, i] == 0)
@@ -276,7 +315,7 @@ namespace Snake
                 b.Color = Color.Red;
 
             
-            Rectangle rect = new Rectangle(x_offshoot + j * w, y_offshoot + i * w, w, w);
+            Rectangle rect = new Rectangle(x_offshoot + j * width, y_offshoot + i * width, width, width);
             g.FillRectangle(b, rect);
         }
     }
