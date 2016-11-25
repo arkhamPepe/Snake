@@ -150,12 +150,25 @@ namespace Snake
             }
 
             MessageBox.Show("Game Over!\nYour score is: " + score);
+
+            Revert_Settings();
             Show_Menu(true);
         }
 
+        /// <summary>
+        /// Resets certain necessary variables to start value. This enables a restart of the game.
+        /// </summary>
         public void Revert_Settings()
         {
+            s.Position_Center();
+            score = 0;
+            wait = 200;
 
+            for (int i = 0; i < width; i++)
+                for (int j = 0; j < width; j++)
+                    p.grid[j, i] = 0;
+
+            PaintBoard();
         }
 
         /// <summary>

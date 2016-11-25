@@ -15,11 +15,13 @@ namespace Snake
         public int start_length, length = 3;
         public int direction = 4; // 1 = right, 2 = up, 3 = left, 4 = down
         public int x, y;
+        private int center;
 
         public Snake(int c) // 'c' for "center"
         {
             x = c;
             y = c;
+            center = c;
         }
 
         public bool Alive(int x, int y, int a) //Determines if snake is alive, ie. inside the playground
@@ -33,6 +35,11 @@ namespace Snake
             //int grid
 
             return true;
+        }
+        public void Position_Center()
+        {
+            x = center;
+            y = center;
         }
     }
 }
