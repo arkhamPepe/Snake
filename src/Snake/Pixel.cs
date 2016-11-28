@@ -16,13 +16,13 @@ namespace Snake
     public class Pixel
     {
         public int apple = -1;
-        public int width; // Width of a box
-        public int amount; 
+        public int box_width; // Width of a box
+        public int amount;
         public int[,] grid;
         
         public Pixel(int w, int a)
         {
-            width = w;
+            box_width = w;
             amount = a;
             grid = new int[a, a];
 
@@ -30,8 +30,6 @@ namespace Snake
                 for (int j = 0; j < amount; j++)
                     grid[j, i] = 0;
         }
-
-        
 
         /// <summary>
         /// Updates the elements in grid[] representing the snake.
@@ -42,7 +40,7 @@ namespace Snake
             for (int i = 0; i < amount; i++)
                 for (int j = 0; j < amount; j++)
                 {
-                    // This element is a snake.
+                    // If this element is a snake, then...
                     if (grid[j,i] > 0)
                         grid[j, i] -= q;
 

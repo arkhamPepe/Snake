@@ -21,13 +21,13 @@ namespace Snake
 
         static int score = 0;
         static int wait = 200;
-        static int amount_cells = 32; // amount of cells in gameboard
-        static int width = 20; // width of each box
+        static int amount_cells_default = 32; // amount of cells in gameboard if tbBoxes == null.
+        static int box_width_default = 20; // width of each box
         static int x_offshoot = 0; // Off-shoot from left border
         static int y_offshoot = 0; // Off shoot from top border
         public bool arrow_pressed = false;
-        public Pixel p = new Pixel(width, amount_cells); // Object that stores all properties of gameboard elements, like pixels
-        Snake s = new Snake(width / 2); // Ormen
+        public Pixel p = new Pixel(box_width_default, amount_cells_default); // Object that stores all properties of gameboard elements, like pixels
+        Snake s = new Snake(box_width_default / 2); // Ormen
         
         public Form1()
         {
@@ -82,7 +82,7 @@ namespace Snake
         Thread th;
 
         // Thread for separate process "unit" while main unit handles key events. This way the player can control the snakes movement while graphics are rendering.
-        public void thread()
+        public void Thread_()
         {                                                         // p.grid[s.x, s.y]
             while (s.Alive(s.x, s.y, p.amount)) // While snake is inside playground
             {
@@ -151,24 +151,34 @@ namespace Snake
 
             MessageBox.Show("Game Over!\nYour score is: " + score);
 
-            Revert_Settings();
+            ResetGame();
             Show_Menu(true);
         }
 
         /// <summary>
         /// Resets certain necessary variables to start value. This enables a restart of the game.
         /// </summary>
-        public void Revert_Settings()
+        public void ResetGame()
         {
-            s.Position_Center();
-            score = 0;
-            wait = 200;
+            s.Position_Center(); // Position snake in center of gameboard.
+            score = 0; // Zero the score.
+            wait = 200; // Set wait interval between each move.
 
-            for (int i = 0; i < width; i++)
-                for (int j = 0; j < width; j++)
+            // Turn all boxes into grass.
+            for (int i = 0; i < p.box_width; i++)
+                for (int j = 0; j < p.box_width; j++)
                     p.grid[j, i] = 0;
 
+            // Adjust size of window according to number of boxes and their width.
+            SetWindowSize(p.amount * p.box_width);
+
             PaintBoard();
+        }
+
+        private void SetWindowSize(int size)
+        {
+            this.Width = size;
+            this.Height = size;
         }
 
         /// <summary>
@@ -213,8 +223,7 @@ namespace Snake
         private void Form1_Load(object sender, EventArgs e)
         {
             // Skapar det önskvärda rutnätet för spelet
-            this.Width = p.amount * p.width;
-            this.Height = p.amount * p.width;
+            SetWindowSize(p.amount * p.box_width);
         }
 
         /// <summary>
@@ -261,16 +270,18 @@ namespace Snake
         {
             Show_Menu(false);
 
+
             score = 0;
             wait = 200;
             s.length = 3;
-            amount_cells = Convert.ToInt32(tbBoxes.Text);
+            p.amount = Convert.ToInt32(tbBoxes.Text);
+            ResetGame();
 
             p.GenerateApple();
             p.CreateSnake(s.length, s.x, s.y);
             PaintBoard();
 
-            th = new Thread(thread);
+            th = new Thread(Thread_); // Distinguish parameter from class Thread.
             th.Start();
         }
 
@@ -328,7 +339,7 @@ namespace Snake
                 b.Color = Color.Red;
 
             
-            Rectangle rect = new Rectangle(x_offshoot + j * width, y_offshoot + i * width, width, width);
+            Rectangle rect = new Rectangle(x_offshoot + j * p.box_width, y_offshoot + i * p.box_width, p.box_width, p.box_width);
             g.FillRectangle(b, rect);
         }
     }
