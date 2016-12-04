@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms;
 
 namespace Snake
@@ -20,15 +21,24 @@ namespace Snake
         public int amount; // Amount of boxes per row.
         public int[,] grid;
         // public int bound_x, bound_y; // Boundary values of most eastern and southern x- and y-coordinate respectively.
+        int screen_height = Screen.PrimaryScreen.WorkingArea.Height; // Assuming the height is less than width of computer display.
 
         
-        public Pixel(int w, int a, int max)
+        public Pixel(int w, int a)
         {
             box_width = w;
             amount = a;
+            int max = GetGridWidth();
             grid = new int[max, max];
 
             ZeroGameboard();
+        }
+
+        private int GetGridWidth()
+        {
+            int width = screen_height / box_width;
+
+            return width;
         }
 
         /// <summary>
@@ -42,7 +52,7 @@ namespace Snake
         }
 
         /// <summary>
-        /// Assigns default values to amount and box_width.
+        /// Assigns default values to amount and box_width and sets gameboard grid.
         /// </summary>
         public Pixel()
         {

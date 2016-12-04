@@ -26,7 +26,7 @@ namespace Snake
         static int x_offshoot = 0; // Off-shoot from left border
         static int y_offshoot = 0; // Off shoot from top border
         public bool arrow_pressed = false;
-        public Pixel p = new Pixel(box_width_default, amount_cells_origin, 40); // Object that stores all properties of gameboard elements, like pixels
+        public Pixel p = new Pixel(box_width_default, amount_cells_origin); // Object that stores all properties of gameboard elements, like pixels
         Snake s = new Snake(box_width_default / 2); // The snake
         public int n = 4; // Decides how many apples that needs to get eaten before the speed changes.
         private int wait_numerator = 5; // numerator and denominator adjusts the change of speed every n'th apple.
