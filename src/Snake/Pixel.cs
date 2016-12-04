@@ -17,18 +17,40 @@ namespace Snake
     {
         public int apple = -1;
         public int box_width; // Width of a box
-        public int amount;
+        public int amount; // Amount of boxes per row.
         public int[,] grid;
+        // public int bound_x, bound_y; // Boundary values of most eastern and southern x- and y-coordinate respectively.
+
         
-        public Pixel(int w, int a)
+        public Pixel(int w, int a, int max)
         {
             box_width = w;
             amount = a;
-            grid = new int[a, a];
+            grid = new int[max, max];
 
+            ZeroGameboard();
+        }
+
+        /// <summary>
+        /// Sets value of all elements in array grid to 0.
+        /// </summary>
+        public void ZeroGameboard()
+        {
             for (int i = 0; i < amount; i++)
                 for (int j = 0; j < amount; j++)
                     grid[j, i] = 0;
+        }
+
+        /// <summary>
+        /// Assigns default values to amount and box_width.
+        /// </summary>
+        public Pixel()
+        {
+            amount = 10;
+            box_width = 32;
+            grid = new int[amount, amount];
+
+            ZeroGameboard();
         }
 
         /// <summary>

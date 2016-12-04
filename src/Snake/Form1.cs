@@ -20,68 +20,26 @@ namespace Snake
         Graphics g = null;
 
         static int score = 0;
-        static int wait = 200;
-        static int amount_cells_default = 32; // amount of cells in gameboard if tbBoxes == null.
+        static int wait, wait_default = 150;
+        static int amount_cells_origin = 32; // amount of cells in gameboard if tbBoxes == null.
         static int box_width_default = 20; // width of each box
         static int x_offshoot = 0; // Off-shoot from left border
         static int y_offshoot = 0; // Off shoot from top border
         public bool arrow_pressed = false;
-        public Pixel p = new Pixel(box_width_default, amount_cells_default); // Object that stores all properties of gameboard elements, like pixels
-        Snake s = new Snake(box_width_default / 2); // Ormen
-        
+        public Pixel p = new Pixel(box_width_default, amount_cells_origin, 40); // Object that stores all properties of gameboard elements, like pixels
+        Snake s = new Snake(box_width_default / 2); // The snake
+        public int n = 4; // Decides how many apples that needs to get eaten before the speed changes.
+        private int wait_numerator = 5; // numerator and denominator adjusts the change of speed every n'th apple.
+        private int wait_denominator = 6;
+
         public Form1()
         {
             InitializeComponent();
-
-            
-            /**
-            ////Moved to btnPlay_Click() to fix problem where the form window won't open until all code in Form1() has run.
-
-            //while (s.Alive(s.x, s.y, p.amount)) // While snake is inside playground
-            //{
-            //    // Move one step in the current direction
-            //    switch (s.direction)
-            //    {
-            //        case 1:
-            //            s.x++;
-            //            break;
-
-            //        case 2:
-            //            s.y++;
-            //            break;
-
-            //        case 3:
-            //            s.x--;
-            //            break;
-
-            //        case 4:
-            //            s.y--;
-            //            break;
-            //    }
-
-            //    if (s.Alive(s.x, s.y, p.amount))
-            //        break;
-
-            //    System.Threading.Thread.Sleep(500);
-            //    // If on top of apple, grow in size (actually just stop the decrements of Snake body elements)
-            //    if (p.grid[s.x, s.y] == p.apple)
-            //    {
-            //        s.length++; // Grow +1
-            //        p.grid[s.x, s.y] = s.length; // Change color of gameboard
-            //    }
-            //    else
-            //    {
-            //        p.Refresh();
-            //    }
-            //}
-
-            //MessageBox.Show("Game Over!");
-            */
         }
         
         Thread th;
 
-        // Thread for separate process "unit" while main unit handles key events. This way the player can control the snakes movement while graphics are rendering.
+        // Thread for separate process "unit" while main unit handles button events. This way the player can control the snakes movement while graphics are rendering.
         public void Thread_()
         {                                                         // p.grid[s.x, s.y]
             while (s.Alive(s.x, s.y, p.amount)) // While snake is inside playground
@@ -160,14 +118,15 @@ namespace Snake
         /// </summary>
         public void ResetGame()
         {
-            s.Position_Center(); // Position snake in center of gameboard.
+            // Position snake in center of gameboard.
+            s.x = p.amount / 2;
+            s.y = p.amount / 2; 
+
             score = 0; // Zero the score.
             wait = 200; // Set wait interval between each move.
 
             // Turn all boxes into grass.
-            for (int i = 0; i < p.box_width; i++)
-                for (int j = 0; j < p.box_width; j++)
-                    p.grid[j, i] = 0;
+            p.ZeroGameboard();
 
             // Adjust size of window according to number of boxes and their width.
             SetWindowSize(p.amount * p.box_width);
@@ -190,8 +149,8 @@ namespace Snake
 
             string score_text = Convert.ToString(score);
 
-            if ((score / 10) % 5 == 0)
-                wait = (wait * 4) / 5;
+            if ((score / 10) % n == 0)
+                wait = (wait * wait_numerator) / wait_denominator;
 
             // Updates and sets score.
             SetLabelText(points, score_text);
@@ -222,8 +181,66 @@ namespace Snake
         /// <param name="e"></param>
         private void Form1_Load(object sender, EventArgs e)
         {
-            // Skapar det önskvärda rutnätet för spelet
+            // Creates the wanted grid for the game
             SetWindowSize(p.amount * p.box_width);
+
+            // Positions all elements appropriately in the middle of the program window
+            CenterMenu();
+            RepositionControls();
+        }
+
+        /// <summary>
+        /// Positions elements within container appropriately.
+        /// </summary>
+        public void RepositionControls()
+        { 
+            // Center values x-axis for all elements in container.
+            int button_x = (container.Width - btnPlay.Width) / 2 ;
+            int lblSnake_x = (container.Width - lblSnake.Width) / 2;
+            int textbox_x = (container.Width - tbBoxes.Width) / 2;
+
+            int position_y = 10;
+
+            Point button = new Point(); // Coordinate of btnPlay
+            Point logo = new Point(); // -"- lblSnake
+            Point text = new Point(); // -"- textbox
+
+            logo.X = lblSnake_x;
+            button.X = button_x;
+            text.X = textbox_x;
+
+            logo.Y = position_y;
+            position_y += lblSnake.Height + 10;
+
+            button.Y = position_y;
+            position_y += btnPlay.Height + 10;
+
+            text.Y = position_y;
+
+            // Position elements in container.
+            btnPlay.Location = button;
+            lblSnake.Location = logo;
+            tbBoxes.Location = text;
+        }
+
+        /// <summary>
+        /// Positions the menu in the center of the form.
+        /// </summary>
+        public void CenterMenu()
+        {
+            decimal form_width = Convert.ToDecimal(this.Width);
+            decimal form_height = Convert.ToDecimal(this.Height);
+
+            int middle_x = (int)Math.Floor(form_width / 2); // Convert decimal to int with cast operator.
+            int middle_y = (int)Math.Floor(form_height / 2);
+
+            Point point = new Point();
+            int _x = middle_x - container.Width / 2;
+            int _y = middle_y - container.Width / 2;
+            point.X = _x;
+            point.Y = _y;
+
+            container.Location = point;
         }
 
         /// <summary>
@@ -270,11 +287,15 @@ namespace Snake
         {
             Show_Menu(false);
 
-
             score = 0;
-            wait = 200;
+            wait = wait_default;
             s.length = 3;
-            p.amount = Convert.ToInt32(tbBoxes.Text);
+
+            if (tbBoxes.Text != "" && Convert.ToInt32(tbBoxes.Text) >= 10 && Convert.ToInt32(tbBoxes.Text) <= 40)
+            {
+                p.amount = Convert.ToInt32(tbBoxes.Text);
+            }
+            
             ResetGame();
 
             p.GenerateApple();
@@ -283,6 +304,9 @@ namespace Snake
 
             th = new Thread(Thread_); // Distinguish parameter from class Thread.
             th.Start();
+
+            // Position menu in middle. The size could have changed from earlier.
+            CenterMenu();
         }
 
         /// <summary>
@@ -291,10 +315,13 @@ namespace Snake
         /// <param name="visible"></param>
         private void Show_Menu(bool visible)
         {
+            // Menu
             lblSnake.Visible = visible;
             btnPlay.Visible = visible;
             tbBoxes.Visible = visible;
+            container.Visible = visible;
 
+            // Points label in upper left corner
             points.Visible = !visible;
         }
 
@@ -341,6 +368,11 @@ namespace Snake
             
             Rectangle rect = new Rectangle(x_offshoot + j * p.box_width, y_offshoot + i * p.box_width, p.box_width, p.box_width);
             g.FillRectangle(b, rect);
+        }
+
+        private void tbBoxes_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
