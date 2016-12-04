@@ -22,15 +22,14 @@ namespace Snake
             y = pos;
         }
 
-        public bool Alive(int x, int y, int a) //Determines if snake is alive, ie. inside the playground
+        public bool Alive(int xy, int a) //Determines if snake is alive, ie. inside the playground
         {
             if (x >= a || x < 0)
                 return false;
             else if (y >= a || y < 0)
                 return false;
-            //else if (grid > 0 && grid < length)
+            //else if (xy > 0 && xy < length)
             //    return false;
-            //int grid
 
             return true;
         }

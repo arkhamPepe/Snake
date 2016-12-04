@@ -31,6 +31,7 @@ namespace Snake
         public int n = 4; // Decides how many apples that needs to get eaten before the speed changes.
         private int wait_numerator = 5; // numerator and denominator adjusts the change of speed every n'th apple.
         private int wait_denominator = 6;
+        public int margin = 10;
 
         public Form1()
         {
@@ -39,10 +40,10 @@ namespace Snake
         
         Thread th;
 
-        // Thread for separate process "unit" while main unit handles button events. This way the player can control the snakes movement while graphics are rendering.
+        // Thread for separate process unit while main unit handles button events. This way the player can control the snakes movement while graphics are rendering.
         public void Thread_()
         {                                                         // p.grid[s.x, s.y]
-            while (s.Alive(s.x, s.y, p.amount)) // While snake is inside playground
+            while (s.Alive(p.grid[s.x, s.y], p.amount)) // While snake is inside playground
             {
                 // Makes it possible to perform only one move per turn
                 arrow_pressed = false;
@@ -67,8 +68,8 @@ namespace Snake
                         break;
                 }
 
-                // Snake is dead.   p.grid[s.x, s.y]
-                if (!s.Alive(s.x, s.y, p.amount))
+                // Snake is dead.
+                if (!s.Alive(p.grid[s.x, s.y], p.amount))
                     break;
 
                 // Wait some...
@@ -86,12 +87,13 @@ namespace Snake
                     6. Increase score and maybe speed
                     */
                     
-                    //this.points.Text = Convert.ToString(s.length * 10 - s.start_length * 10);
                     s.length++;
                     p.grid[s.x, s.y] = s.length;
                     p.GenerateApple();
                     p.Refresh(0);
                     UpdateScore();
+                    points.Text = Convert.ToString(score);
+                    //points.Text = Convert.ToString(s.length * 10 - s.start_length * 10);
                 }
                 else
                 {
@@ -123,13 +125,15 @@ namespace Snake
             s.y = p.amount / 2; 
 
             score = 0; // Zero the score.
+            points.Text = Convert.ToString(score);
+
             wait = 200; // Set wait interval between each move.
 
             // Turn all boxes into grass.
             p.ZeroGameboard();
 
             // Adjust size of window according to number of boxes and their width.
-            SetWindowSize(p.amount * p.box_width);
+            SetWindowSize((p.amount+1) * p.box_width);
 
             PaintBoard();
         }
@@ -137,7 +141,7 @@ namespace Snake
         private void SetWindowSize(int size)
         {
             this.Width = size;
-            this.Height = size;
+            this.Height = size + p.box_width;
         }
 
         /// <summary>
@@ -184,9 +188,28 @@ namespace Snake
             // Creates the wanted grid for the game
             SetWindowSize(p.amount * p.box_width);
 
+            // Sets the width of all elements
+            SetElementsSize(180);
+
             // Positions all elements appropriately in the middle of the program window
             CenterMenu();
             RepositionControls();
+        }
+
+        public void SetElementsSize(int cont)
+        {
+            // Width
+            container.Width = cont;
+            btnPlay.Width = container.Width - 2 * margin;
+            tbContainer.Width = btnPlay.Width;
+
+            // Elements inside tbContainer
+            tbBoxes.Width = tbContainer.Width - (label1.Width + margin * 3);
+
+            // Height
+            btnPlay.Height = btnPlay.Width / 4;
+            tbContainer.Height = btnPlay.Height;
+            container.Height = lblSnake.Height + btnPlay.Height + tbContainer.Height + 4 * margin;
         }
 
         /// <summary>
@@ -194,32 +217,36 @@ namespace Snake
         /// </summary>
         public void RepositionControls()
         { 
-            // Center values x-axis for all elements in container.
-            int button_x = (container.Width - btnPlay.Width) / 2 ;
-            int lblSnake_x = (container.Width - lblSnake.Width) / 2;
-            int textbox_x = (container.Width - tbBoxes.Width) / 2;
-
-            int position_y = 10;
+            int position_y = margin;
 
             Point button = new Point(); // Coordinate of btnPlay
             Point logo = new Point(); // -"- lblSnake
-            Point text = new Point(); // -"- textbox
+            Point _container = new Point(); // -"- tbContainer
+            Point width_label = new Point(); // -"- label1
+            Point text = new Point(); // -"- tbBoxes
 
-            logo.X = lblSnake_x;
-            button.X = button_x;
-            text.X = textbox_x;
-
+            logo.X = (container.Width - lblSnake.Width) / 2; ;
             logo.Y = position_y;
-            position_y += lblSnake.Height + 10;
+            position_y += lblSnake.Height + margin;
 
+            button.X = (container.Width - btnPlay.Width) / 2; ;
             button.Y = position_y;
-            position_y += btnPlay.Height + 10;
+            position_y += btnPlay.Height + margin;
 
-            text.Y = position_y;
+            _container.X = margin;
+            _container.Y = position_y;
+
+            width_label.X = margin;
+            width_label.Y = (tbContainer.Height - label1.Height) / 2;
+
+            text.X = label1.Width + margin;
+            text.Y = (tbContainer.Height - tbBoxes.Height) / 2;
 
             // Position elements in container.
             btnPlay.Location = button;
             lblSnake.Location = logo;
+            tbContainer.Location = _container;
+            label1.Location = width_label;
             tbBoxes.Location = text;
         }
 
@@ -291,7 +318,7 @@ namespace Snake
             wait = wait_default;
             s.length = 3;
 
-            if (tbBoxes.Text != "" && Convert.ToInt32(tbBoxes.Text) >= 10 && Convert.ToInt32(tbBoxes.Text) <= 40)
+            if (tbBoxes.Text != "" && Convert.ToInt32(tbBoxes.Text) >= 10 && Convert.ToInt32(tbBoxes.Text) <= p.grid_length)
             {
                 p.amount = Convert.ToInt32(tbBoxes.Text);
             }
@@ -368,6 +395,11 @@ namespace Snake
             
             Rectangle rect = new Rectangle(x_offshoot + j * p.box_width, y_offshoot + i * p.box_width, p.box_width, p.box_width);
             g.FillRectangle(b, rect);
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void tbBoxes_TextChanged(object sender, EventArgs e)

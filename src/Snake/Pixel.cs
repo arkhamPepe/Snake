@@ -20,7 +20,7 @@ namespace Snake
         public int box_width; // Width of a box
         public int amount; // Amount of boxes per row.
         public int[,] grid;
-        // public int bound_x, bound_y; // Boundary values of most eastern and southern x- and y-coordinate respectively.
+        public int grid_length;
         int screen_height = Screen.PrimaryScreen.WorkingArea.Height; // Assuming the height is less than width of computer display.
 
         
@@ -28,8 +28,8 @@ namespace Snake
         {
             box_width = w;
             amount = a;
-            int max = GetGridWidth();
-            grid = new int[max, max];
+            grid_length = GetGridWidth();
+            grid = new int[grid_length, grid_length];
 
             ZeroGameboard();
         }
