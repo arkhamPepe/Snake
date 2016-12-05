@@ -43,7 +43,7 @@ namespace Snake
         // Thread for separate process unit while main unit handles button events. This way the player can control the snakes movement while graphics are rendering.
         public void Thread_()
         {                                                         // p.grid[s.x, s.y]
-            while (s.Alive(p.amount)) // While snake is inside playground
+            while (s.Alive(p.grid, p.amount)) // While snake is inside playground
             {
                 // Makes it possible to perform only one move per turn
                 arrow_pressed = false;
@@ -69,7 +69,7 @@ namespace Snake
                 }
 
                 // Snake is dead.
-                if (!s.Alive(p.amount))
+                if (!s.Alive(p.grid, p.amount))
                     break;
 
                 // Wait some...

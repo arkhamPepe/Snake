@@ -23,14 +23,14 @@ namespace Snake
         }
 
         // public bool Alive(int xy, int a) //Determines if snake is alive, ie. inside the playground
-        public bool Alive(int a)
+        public bool Alive(int[,] grid, int a)
         {
             if (x >= a || x < 0)
                 return false;
-            else if (y >= a || y < 0)
+            if (y >= a || y < 0)
                 return false;
-            //else if (xy > 0 && xy < length)
-            //    return false;
+            if (grid[x, y] > 0 && grid[x, y] < length)
+                return false;
 
             return true;
         }
