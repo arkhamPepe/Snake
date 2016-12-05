@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -14,22 +8,20 @@ namespace Snake
     public partial class Form1 : Form
     {
         SolidBrush b = new SolidBrush(Color.Blue);
-        //SolidBrush green = new SolidBrush(Color.Green);
-        //SolidBrush red = new SolidBrush(Color.Green);
 
         Graphics g = null;
 
-        static int score = 0;
-        static int wait, wait_default = 20;
-        static int amount_cells_origin = 20; // amount of cells in gameboard if tbBoxes == null.
-        static int box_width_default = 10; // width of each box
-        static int x_offshoot = 0; // Off-shoot from left border
-        static int y_offshoot = 0; // Off shoot from top border
-        public bool arrow_pressed = false;
+        public int score = 0;
+        public int wait, wait_default = 50;
+        private static int amount_cells_origin = 40; // amount of cells in gameboard if tbBoxes == null.
+        private static int box_width_default = 15; // width of each box
+        private int x_offshoot = 0; // Off-shoot from left border
+        private int y_offshoot = 0; // Off-shoot from top border
+        private bool arrow_pressed = false;
         public Pixel p = new Pixel(box_width_default, amount_cells_origin); // Object that stores all properties of gameboard elements, like pixels
         Snake s = new Snake(box_width_default / 2); // The snake
-        public int n = 4; // Decides how many apples that needs to get eaten before the speed changes.
-        private int wait_numerator = 5; // numerator and denominator adjusts the change of speed every n'th apple.
+        public int applesPerSpeedIncrease = 4; // Decides how many apples that needs to get eaten before the speed changes.
+        private int wait_numerator = 5; // numerator and denominator adjusts the change of speed every applesPerSpeedIncrease'th apple.
         private int wait_denominator = 6;
         public int margin = 10;
 
@@ -38,7 +30,7 @@ namespace Snake
             InitializeComponent();
         }
         
-        Thread th;
+        Thread game;
 
         // Thread for separate process unit while main unit handles button events. This way the player can control the snakes movement while graphics are rendering.
         public void Thread_()
@@ -92,8 +84,8 @@ namespace Snake
                     p.GenerateApple();
                     p.Refresh(0);
                     UpdateScore();
+                    UpdateSpeed();
                     points.Text = Convert.ToString(score);
-                    //points.Text = Convert.ToString(s.length * 10 - s.start_length * 10);
                 }
                 else
                 {
@@ -112,7 +104,7 @@ namespace Snake
             MessageBox.Show("Game Over!\nYour score is: " + score);
 
             ResetGame();
-            Show_Menu(true);
+            ShowMenu(true);
         }
 
         /// <summary>
@@ -122,10 +114,12 @@ namespace Snake
         {
             // Position snake in center of gameboard.
             s.x = p.amount / 2;
-            s.y = p.amount / 2; 
+            s.y = p.amount / 2;
+
+            s.length = s.start_length; // Resets snake length
 
             score = 0; // Zero the score.
-            points.Text = Convert.ToString(score);
+            SetPointsText(Convert.ToString(score));
 
             wait = wait_default; // Set wait interval between each move.
 
@@ -151,31 +145,34 @@ namespace Snake
         {
             score += 10;
 
-            string score_text = Convert.ToString(score);
-
-            if ((score / 10) % n == 0)
-                wait = (wait * wait_numerator) / wait_denominator;
+            //string score_text = Convert.ToString(score);
 
             // Updates and sets score.
-            SetLabelText(points, score_text);
+            SetPointsText(Convert.ToString(score));
+        }
+
+        public void UpdateSpeed()
+        {
+            if ((score / 10) % applesPerSpeedIncrease == 0)
+                wait = (wait * wait_numerator) / wait_denominator;
         }
 
         /// <summary>
-        /// Sets the text of a label form to input value. 
+        /// Sets the text of label points to input value. 
         /// Performs a cross-thread safe call if necessary.
         /// </summary>
         /// <param name="label">Holds the label object</param>
         /// <param name="text">New string value of label.Text</param>
-        private string SetLabelText(Label label, string text)
+        public void SetPointsText(string text)
         {
-            if (label.InvokeRequired)
+            if (points.InvokeRequired)
             {
-                return text;
+                points.Invoke((MethodInvoker)delegate ()
+                {
+                    SetPointsText(text);
+                });
             }
-            else
-            {
-                return text;
-            }
+            else points.Text = text;
         }
 
         /// <summary>
@@ -312,11 +309,11 @@ namespace Snake
         /// <param name="e"></param>
         private void btnPlay_Click(object sender, EventArgs e)
         {
-            Show_Menu(false);
+            ShowMenu(false);
 
             score = 0;
             wait = wait_default;
-            s.length = 3;
+            s.length = s.start_length;
 
             if (tbBoxes.Text != "" && Convert.ToInt32(tbBoxes.Text) >= 10 && Convert.ToInt32(tbBoxes.Text) <= p.grid_length)
             {
@@ -329,8 +326,8 @@ namespace Snake
             p.CreateSnake(s.length, s.x, s.y);
             PaintBoard();
 
-            th = new Thread(Thread_); // Distinguish parameter from class Thread.
-            th.Start();
+            game = new Thread(Thread_); // Distinguish parameter from class Thread.
+            game.Start();
 
             // Position menu in middle. The size could have changed from earlier.
             CenterMenu();
@@ -340,16 +337,35 @@ namespace Snake
         /// Either shows the menu and hides the rest or shows the rest and hides the menu.
         /// </summary>
         /// <param name="visible"></param>
-        private void Show_Menu(bool visible)
+        private void ShowMenu(bool visible)
         {
             // Menu
-            lblSnake.Visible = visible;
-            btnPlay.Visible = visible;
-            tbBoxes.Visible = visible;
-            container.Visible = visible;
+            //lblSnake.Visible = visible;
+            //btnPlay.Visible = visible;
+            //tbBoxes.Visible = visible;
+            //container.Visible = visible;
+
+            // Menu
+            SetControlVisibility(lblSnake, visible);
+            SetControlVisibility(btnPlay, visible);
+            SetControlVisibility(tbBoxes, visible);
+            SetControlVisibility(container, visible);
 
             // Points label in upper left corner
-            points.Visible = !visible;
+            SetControlVisibility(points, !visible);
+            //points.Visible = !visible;
+        }
+
+        public void SetControlVisibility(Control ctrl, bool vis)
+        {
+            if (ctrl.InvokeRequired)
+            {
+                ctrl.Invoke((MethodInvoker)delegate ()
+                {
+                    SetControlVisibility(ctrl, vis);
+                });
+            }
+            else ctrl.Visible = vis;
         }
 
         // Happened to create this function and now it is mandatory in order for "Snake.game" to work
