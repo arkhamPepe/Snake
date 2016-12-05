@@ -20,9 +20,9 @@ namespace Snake
         Graphics g = null;
 
         static int score = 0;
-        static int wait, wait_default = 150;
+        static int wait, wait_default = 20;
         static int amount_cells_origin = 20; // amount of cells in gameboard if tbBoxes == null.
-        static int box_width_default = 20; // width of each box
+        static int box_width_default = 10; // width of each box
         static int x_offshoot = 0; // Off-shoot from left border
         static int y_offshoot = 0; // Off shoot from top border
         public bool arrow_pressed = false;
@@ -127,7 +127,7 @@ namespace Snake
             score = 0; // Zero the score.
             points.Text = Convert.ToString(score);
 
-            wait = 200; // Set wait interval between each move.
+            wait = wait_default; // Set wait interval between each move.
 
             // Turn all boxes into grass.
             p.ZeroGameboard();
