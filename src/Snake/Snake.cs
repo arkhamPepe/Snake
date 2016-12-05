@@ -29,8 +29,8 @@ namespace Snake
                 return false;
             if (y >= a || y < 0)
                 return false;
-            if (grid[x, y] > 0 && grid[x, y] < length)
-                return false;
+            //if (grid[x, y] > 0 && grid[x, y] < length)
+            //    return false;
 
             return true;
         }
