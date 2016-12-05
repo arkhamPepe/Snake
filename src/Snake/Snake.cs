@@ -22,7 +22,8 @@ namespace Snake
             y = pos;
         }
 
-        public bool Alive(int xy, int a) //Determines if snake is alive, ie. inside the playground
+        // public bool Alive(int xy, int a) //Determines if snake is alive, ie. inside the playground
+        public bool Alive(int a)
         {
             if (x >= a || x < 0)
                 return false;

@@ -21,7 +21,7 @@ namespace Snake
 
         static int score = 0;
         static int wait, wait_default = 150;
-        static int amount_cells_origin = 32; // amount of cells in gameboard if tbBoxes == null.
+        static int amount_cells_origin = 20; // amount of cells in gameboard if tbBoxes == null.
         static int box_width_default = 20; // width of each box
         static int x_offshoot = 0; // Off-shoot from left border
         static int y_offshoot = 0; // Off shoot from top border
@@ -43,7 +43,7 @@ namespace Snake
         // Thread for separate process unit while main unit handles button events. This way the player can control the snakes movement while graphics are rendering.
         public void Thread_()
         {                                                         // p.grid[s.x, s.y]
-            while (s.Alive(p.grid[s.x, s.y], p.amount)) // While snake is inside playground
+            while (s.Alive(p.amount)) // While snake is inside playground
             {
                 // Makes it possible to perform only one move per turn
                 arrow_pressed = false;
@@ -69,7 +69,7 @@ namespace Snake
                 }
 
                 // Snake is dead.
-                if (!s.Alive(p.grid[s.x, s.y], p.amount))
+                if (!s.Alive(p.amount))
                     break;
 
                 // Wait some...
